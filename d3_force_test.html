@@ -6,8 +6,8 @@
 	<body>
 		<script src="lib/d3.js"></script>
 		<script src="data/network_data01.js"></script>
-		<script src="data/network_data02.js"></script>
-		<script src="data/network_data03.js"></script>
+		
+		
 		
 		<div id="sidebar">
 			<div>
@@ -30,6 +30,7 @@
 		</div>
 		
 		<script>
+				
 				var width = 600;
 				var height = 600;
 				
@@ -40,32 +41,25 @@
 					.attr("width", width)
 					.attr("height", height)
 					.attr("id", "canvas_svg");
-					
-				var network_group = canvas_svg
-					.append("g")
-					.attr("id", "network_group")
-					.style("stroke",  "white")
-					.style("fill", "#0088ff");
 				
-				network_group.selectAll("line")
+				canvas_svg.selectAll("line")
 					.data(network_data.links[1].subnet_links)
 					.enter()
 					.append("line")
-					.attr("class", "subnet_link_lines");
-				
-				var subnet_node_groups = network_group
-					.selectAll("g")
+					.style("stroke", "white")
+					.attr("class", "link_lines");
+
+				canvas_svg.selectAll("circle")
 					.data(network_data.subnet_nodes)
 					.enter()
-					.append("g")
-					.attr("id", function (d, i) { return "subnet" + i + "_group"; })
-					.attr("class", "subnet_group");
-				
-				subnet_node_groups.append("g").attr("class", "ip_group");
-				subnet_node_groups.append("circle")
-					.attr("class", "subnet_node_circles")
-					.attr("cx", function (d, i) { return i*(width/subnet_node_groups.data().length); })
-					.attr("cy", function (d, i) { return i*(height/subnet_node_groups.data().length); })
+					.append("circle")
+					.style("fill", "blue") //get fill from edited data
+					.attr("class", "node_circles")
+					.attr("cx", function (d, i) { 
+						console.log(d);
+						return i*(width/d.length);
+					})
+					.attr("cy", function (d, i) { return i*(height/d.length); })
 					.attr("r", 15)
 					.attr("z", 1)
 					.call(d3.drag()
@@ -100,13 +94,13 @@
 				}
 				
 				function updateNodePositions () {						
-					d3.selectAll(".subnet_link_lines")
+					d3.selectAll(".link_lines")
 						.attr("x1", function (d) { return d.source.x; })
 						.attr("y1", function (d) { return d.source.y; })
 						.attr("x2", function (d) { return d.target.x; })
 						.attr("y2", function (d) { return d.target.y; });
 						
-					d3.selectAll(".subnet_node_circles")
+					d3.selectAll(".node_circles")
 						.attr("cx", function (d) { return d.x; })
 						.attr("cy", function (d) { return d.y; });
 
